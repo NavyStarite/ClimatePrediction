@@ -1,11 +1,12 @@
 import requests
 import pandas as pd
-from joblib import PrintTime
+import pickle
+import datetime
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, mean_absolute_error
-import datetime
+
 
 class PredictData():
     def __init__(self, temp_pred, temp_real, error):
@@ -13,7 +14,7 @@ class PredictData():
         self.temp_real = temp_real
         self.error = error
 
-
+filename = 'best_trained_model.pkl'
 
 #Fetch data from Open-Meteo
 print("Fetching historical weather data...")
@@ -70,7 +71,7 @@ best_model = models[best_model_name]
 print(f"Best model: {best_model_name}")
 
 predictionData = []
-
+pickle.dump(best_model, open(filename, 'wb'))
 
 for hourIndex in range(24):
     print(f"Predicting temperature for {hourIndex}:00")
@@ -111,7 +112,8 @@ for hourIndex in range(24):
         print(f"Prediction Error: {error:.2f}°C")
     else:
         print(f"Actual temperature not available")
-        actual_temperature = "NaN"
+        error = 0
+        actual_temperature = 0
 
     predictionData.append(PredictData(future_prediction[0], actual_temperature, error))
 
