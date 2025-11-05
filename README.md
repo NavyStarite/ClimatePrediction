@@ -1,1 +1,1 @@
-# ClimatePredition
+# ClimatePrediction
